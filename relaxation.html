@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSV - Relaxation Exercises</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/2.3.0/alpine.js" integrity="sha512-nIwdJlD5/vHj23CbO2iHCXtsqzdTTx3e3uAmpTm4x2Y8xCIFyWu4cSIV8GaGe2UNVq86/1h9EgUZy7tn243qdA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-100 to-purple-100 min-h-screen">
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-indigo-800">MSV Relaxation Exercises</h1>
+                <nav>
+                    <a href="profile.html" class="text-indigo-600 hover:text-indigo-800 ml-4 transition duration-300">Back to Dashboard</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto mt-12 px-6">
+        <h2 class="text-3xl font-bold text-gray-800 mb-8">Relaxation Exercises</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Guided Meditation -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Guided Meditation</h3>
+                <p class="text-gray-600 mb-4">Follow along with this 10-minute guided meditation for relaxation and stress relief.</p>
+                <audio controls class="w-full mb-4">
+                    <source src="path_to_your_meditation_audio.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <button id="startMeditationBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">Start Meditation</button>
+            </div>
+
+            <!-- Breathing Techniques -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Breathing Techniques</h3>
+                <p class="text-gray-600 mb-4">Practice these breathing exercises to calm your mind and reduce anxiety.</p>
+                <ul class="list-disc list-inside mb-4">
+                    <li>4-7-8 Breathing</li>
+                    <li>Box Breathing</li>
+                    <li>Diaphragmatic Breathing</li>
+                </ul>
+                <div class="flex flex-col space-y-2">
+                    <button id="start478BreathingBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">Start 4-7-8 Breathing</button>
+                    <button id="startBoxBreathingBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">Start Box Breathing</button>
+                    <button id="startDiaphragmaticBreathingBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">Start Diaphragmatic Breathing</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Breathing Exercise Modal -->
+        <div id="breathingModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center">
+            <div class="bg-white p-8 rounded-lg shadow-xl">
+                <h3 id="breathingTitle" class="text-2xl font-semibold text-gray-800 mb-4">Breathing Exercise</h3>
+                <p id="breathingDescription" class="text-gray-600 mb-4"></p>
+                <div id="breathingCircle" class="w-48 h-48 rounded-full border-4 border-indigo-500 mx-auto mb-4"></div>
+                <p id="breathingInstruction" class="text-xl font-semibold text-center mb-4">Inhale</p>
+                <button id="closeModalBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">Close</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white mt-16 py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-600">&copy; 2024 MSV. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const startMeditationBtn = document.getElementById('startMeditationBtn');
+            const start478BreathingBtn = document.getElementById('start478BreathingBtn');
+            const startBoxBreathingBtn = document.getElementById('startBoxBreathingBtn');
+            const startDiaphragmaticBreathingBtn = document.getElementById('startDiaphragmaticBreathingBtn');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const breathingModal = document.getElementById('breathingModal');
+            const breathingCircle = document.getElementById('breathingCircle');
+            const breathingInstruction = document.getElementById('breathingInstruction');
+            const breathingTitle = document.getElementById('breathingTitle');
+            const breathingDescription = document.getElementById('breathingDescription');
+
+            startMeditationBtn.addEventListener('click', function() {
+                alert("Starting guided meditation. Please make sure your audio is turned on.");
+                // You can add more functionality here, like starting a timer or showing a visual guide
+            });
+
+            start478BreathingBtn.addEventListener('click', function() {
+                showBreathingModal('4-7-8 Breathing', 'Inhale for 4 seconds, hold for 7 seconds, exhale for 8 seconds.');
+                start478BreathingAnimation();
+            });
+
+            startBoxBreathingBtn.addEventListener('click', function() {
+                showBreathingModal('Box Breathing', 'Inhale for 4 seconds, hold for 4 seconds, exhale for 4 seconds, hold for 4 seconds.');
+                startBoxBreathingAnimation();
+            });
+
+            startDiaphragmaticBreathingBtn.addEventListener('click', function() {
+                showBreathingModal('Diaphragmatic Breathing', 'Place one hand on your chest and the other on your belly. Breathe deeply through your nose, focusing on expanding your belly.');
+                startDiaphragmaticBreathingAnimation();
+            });
+
+            closeModalBtn.addEventListener('click', function() {
+                breathingModal.classList.add('hidden');
+                breathingModal.classList.remove('flex');
+            });
+
+            function showBreathingModal(title, description) {
+                breathingTitle.textContent = title;
+                breathingDescription.textContent = description;
+                breathingModal.classList.remove('hidden');
+                breathingModal.classList.add('flex');
+            }
+
+            function start478BreathingAnimation() {
+                let phase = 0;
+
+                function animate() {
+                    if (phase === 0) {
+                        breathingCircle.style.transform = 'scale(1.5)';
+                        breathingCircle.style.transition = 'transform 4s ease-in-out';
+                        breathingInstruction.textContent = 'Inhale for 4 seconds';
+                        setTimeout(() => {
+                            phase = 1;
+                            animate();
+                        }, 4000);
+                    } else if (phase === 1) {
+                        breathingInstruction.textContent = 'Hold for 7 seconds';
+                        setTimeout(() => {
+                            phase = 2;
+                            animate();
+                        }, 7000);
+                    } else if (phase === 2) {
+                        breathingCircle.style.transform = 'scale(1)';
+                        breathingCircle.style.transition = 'transform 8s ease-in-out';
+                        breathingInstruction.textContent = 'Exhale for 8 seconds';
+                        setTimeout(() => {
+                            phase = 0;
+                            animate();
+                        }, 8000);
+                    }
+                }
+
+                animate();
+            }
+
+            function startBoxBreathingAnimation() {
+                let phase = 0;
+
+                function animate() {
+                    if (phase === 0) {
+                        breathingCircle.style.transform = 'scale(1.5)';
+                        breathingCircle.style.transition = 'transform 4s ease-in-out';
+                        breathingInstruction.textContent = 'Inhale for 4 seconds';
+                        setTimeout(() => {
+                            phase = 1;
+                            animate();
+                        }, 4000);
+                    } else if (phase === 1) {
+                        breathingInstruction.textContent = 'Hold for 4 seconds';
+                        setTimeout(() => {
+                            phase = 2;
+                            animate();
+                        }, 4000);
+                    } else if (phase === 2) {
+                        breathingCircle.style.transform = 'scale(1)';
+                        breathingCircle.style.transition = 'transform 4s ease-in-out';
+                        breathingInstruction.textContent = 'Exhale for 4 seconds';
+                        setTimeout(() => {
+                            phase = 3;
+                            animate();
+                        }, 4000);
+                    } else if (phase === 3) {
+                        breathingInstruction.textContent = 'Hold for 4 seconds';
+                        setTimeout(() => {
+                            phase = 0;
+                            animate();
+                        }, 4000);
+                    }
+                }
+
+                animate();
+            }
+
+            function startDiaphragmaticBreathingAnimation() {
+                let phase = 0;
+
+                function animate() {
+                    if (phase === 0) {
+                        breathingCircle.style.transform = 'scale(1.5)';
+                        breathingCircle.style.transition = 'transform 4s ease-in-out';
+                        breathingInstruction.textContent = 'Inhale deeply through your nose';
+                        setTimeout(() => {
+                            phase = 1;
+                            animate();
+                        }, 4000);
+                    } else if (phase === 1) {
+                        breathingCircle.style.transform = 'scale(1)';
+                        breathingCircle.style.transition = 'transform 4s ease-in-out';
+                        breathingInstruction.textContent = 'Exhale slowly through your mouth';
+                        setTimeout(() => {
+                            phase = 0;
+                            animate();
+                        }, 4000);
+                    }
+                }
+
+                animate();
+            }
+        });
+    </script>
+</body>
+</html>

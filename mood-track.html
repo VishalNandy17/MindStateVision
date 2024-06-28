@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSV - Mood Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .speedometer {
+            width: 200px;
+            height: 100px;
+            background: conic-gradient(
+                from 180deg,
+                #10B981 0deg 60deg,
+                #FBBF24 60deg 120deg,
+                #EF4444 120deg 180deg
+            );
+            border-radius: 100px 100px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .speedometer::after {
+            content: '';
+            position: absolute;
+            width: 160px;
+            height: 80px;
+            background: white;
+            border-radius: 80px 80px 0 0;
+            top: 20px;
+            left: 20px;
+        }
+        .needle {
+            position: absolute;
+            width: 2px;
+            height: 80px;
+            background: #374151;
+            bottom: 0;
+            left: 50%;
+            transform-origin: bottom;
+            transform: rotate(0deg);
+            transition: transform 0.5s ease-in-out;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-100 to-purple-100 min-h-screen">
+    <!-- Header remains the same -->
+
+    <main class="container mx-auto mt-12 px-6">
+        <section class="bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">Mood Assessment</h2>
+            <p class="text-gray-600 mb-6">Answer the following questions to help us understand your current mood. Select the option that best describes how you've been feeling over the past week.</p>
+            
+            <div id="quiz" class="space-y-8">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+
+            <button id="submit-btn" class="mt-8 bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">Submit Answers</button>
+
+            <div id="result" class="mt-8 hidden">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Your Mood Assessment Result</h3>
+                <div class="flex items-center justify-center mb-4">
+                    <div class="speedometer">
+                        <div class="needle"></div>
+                    </div>
+                </div>
+                <p id="result-text" class="text-center text-lg font-semibold"></p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const questions = [
+            {
+                question: "How often have you felt down, depressed, or hopeless?",
+                options: ["Not at all", "Several days", "More than half the days", "Nearly every day"],
+                scores: [0, 1, 2, 3]
+            },
+            {
+                question: "How often have you had little interest or pleasure in doing things?",
+                options: ["Not at all", "Several days", "More than half the days", "Nearly every day"],
+                scores: [0, 1, 2, 3]
+            },
+            {
+                question: "How often have you had trouble falling or staying asleep, or sleeping too much?",
+                options: ["Not at all", "Several days", "More than half the days", "Nearly every day"],
+                scores: [0, 1, 2, 3]
+            },
+            {
+                question: "How often have you felt tired or had little energy?",
+                options: ["Not at all", "Several days", "More than half the days", "Nearly every day"],
+                scores: [0, 1, 2, 3]
+            },
+            {
+                question: "How often have you had trouble concentrating on things?",
+                options: ["Not at all", "Several days", "More than half the days", "Nearly every day"],
+                scores: [0, 1, 2, 3]
+            }
+        ];
+
+        function renderQuestions() {
+            const quizContainer = document.getElementById('quiz');
+            questions.forEach((q, qIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.innerHTML = `
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">${q.question}</h3>
+                    <div class="space-y-2">
+                        ${q.options.map((option, oIndex) => `
+                            <div class="flex items-center">
+                                <input type="radio" id="q${qIndex}_o${oIndex}" name="q${qIndex}" value="${oIndex}" class="mr-2">
+                                <label for="q${qIndex}_o${oIndex}" class="text-gray-700">${option}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                quizContainer.appendChild(questionDiv);
+            });
+        }
+
+        function submitAnswers() {
+            let totalScore = 0;
+            questions.forEach((q, qIndex) => {
+                const selected = document.querySelector(`input[name="q${qIndex}"]:checked`);
+                if (selected) {
+                    const selectedIndex = parseInt(selected.value);
+                    totalScore += q.scores[selectedIndex];
+                    
+                    const optionElements = document.querySelectorAll(`input[name="q${qIndex}"]`);
+                    optionElements.forEach((opt, oIndex) => {
+                        const label = opt.nextElementSibling;
+                        if (oIndex === selectedIndex) {
+                            label.classList.add('text-green-600', 'font-semibold');
+                        } else {
+                            label.classList.add('text-gray-400');
+                        }
+                    });
+                }
+            });
+
+            displayResult(totalScore);
+
+            document.getElementById('submit-btn').disabled = true;
+            document.getElementById('submit-btn').classList.add('bg-gray-400', 'cursor-not-allowed');
+        }
+
+        function displayResult(score) {
+            const resultDiv = document.getElementById('result');
+            const resultText = document.getElementById('result-text');
+            const needle = document.querySelector('.needle');
+
+            resultDiv.classList.remove('hidden');
+
+            let moodLevel, needleRotation;
+            if (score <= 4) {
+                moodLevel = "Low risk";
+                needleRotation = 30;
+            } else if (score <= 9) {
+                moodLevel = "Moderate risk";
+                needleRotation = 90;
+            } else {
+                moodLevel = "High risk";
+                needleRotation = 150;
+            }
+
+            resultText.textContent = `Your mood assessment score: ${score} - ${moodLevel}`;
+            needle.style.transform = `rotate(${needleRotation}deg)`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuestions();
+            document.getElementById('submit-btn').addEventListener('click', submitAnswers);
+        });
+    </script>
+</body>
+</html>
